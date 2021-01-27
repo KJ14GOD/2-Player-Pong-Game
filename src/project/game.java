@@ -2,9 +2,32 @@ package project;
 
 
 import java.awt.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.awt.event.*;
 import javax.swing.*;
 import java.lang.Object;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Scanner;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import javax.swing.Timer;
 
@@ -15,7 +38,6 @@ public class game extends JPanel implements KeyListener, ActionListener{
 	private boolean play = false;
 	private int score1 = 0;
 	private int score2 = 0;
-	private int totalBricks = 21;
 	private Timer timer; 	
 	private int delay = 8;	
 	private int playerX = 310;
@@ -36,6 +58,8 @@ public class game extends JPanel implements KeyListener, ActionListener{
 	}
 	
 	public void paint (Graphics g) {
+		
+	
 		g.setColor(Color.BLACK);
 		g.fillRect(1,1, 692, 592);
 		
@@ -44,9 +68,9 @@ public class game extends JPanel implements KeyListener, ActionListener{
 		g.fillRect(0, 0, 692, 3);
 		g.fillRect(691, 0, 3, 592);
 		
-	//	g.setColor(Color.WHITE);
-	//	g.setFont(new Font("serif",Font.BOLD, 25));
-	//	g.drawString("Start Game", 300, 300);
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("serif",Font.BOLD, 25));
+		g.drawString("Start Game", 300, 300);
 		
 		g.setColor(Color.WHITE);
 	    g.setFont(new Font("serif",Font.BOLD, 40));
@@ -73,7 +97,7 @@ public class game extends JPanel implements KeyListener, ActionListener{
 			score1 += 1; 
 			ballposX = 300;
 		    ballposY = 300;
-
+		    	
 			
 			
 		}
