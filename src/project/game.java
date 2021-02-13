@@ -16,9 +16,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -35,6 +32,17 @@ import javax.swing.Timer;
 
 public class game extends JPanel implements KeyListener, ActionListener{
 	
+	private String ip = "localhost";
+	private Scanner scanner = new Scanner(System.in);
+	private int port = 22222;
+	private Socket socket;
+	private DataOutputStream dos;
+	private DataInputStream dis;
+	private ServerSocket serverSocket;
+	private boolean unableToCommunicateWithOpponent = false;
+	private String waitingString = "Waiting for another player";
+	private String unableToCommunicateWithOpponentString = "Unable to communicate with opponent.";
+
 	private boolean play = false;
 	private int score1 = 0;
 	private int score2 = 0;
@@ -55,6 +63,17 @@ public class game extends JPanel implements KeyListener, ActionListener{
 		setFocusTraversalKeysEnabled(false);
 	    timer = new Timer(delay, this);
 	    timer.start();
+	    
+	    System.out.println("Please input the IP: ");
+	    ip = scanner.nextLine();
+	    System.out.println("Please input the port: ");
+	    port = scanner.nextInt();
+	    while (port < 1 || port > 65535) {
+	    	System.out.println("The port entered was invalid. Please enter another port");
+	    	port = scanner.nextInt();
+	    }
+
+		if (!connect()) initializeServer();
 	}
 	
 	public void paint (Graphics g) {
@@ -229,6 +248,38 @@ public class game extends JPanel implements KeyListener, ActionListener{
 	public void moveLeft2() {
 		play = true;
 		playerX2 -= 20;
+	}
+	
+	private void listenForServerRequest() {
+		Socket socket = null;
+		try {
+			socket = serverSocket.accept();
+			dos = new DataOutputStream(socket.getOutputStream());
+			dis = new DataInputStream(socket.getInputStream());
+			System.out.println("CLIENT HAS REQUESTED TO JOIN, AND WE HAVE ACCEPTED");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private boolean connect() {
+		try {
+			socket = new Socket(ip, port);
+			dos = new DataOutputStream(socket.getOutputStream());
+			dis = new DataInputStream(socket.getInputStream());
+		} catch (IOException e) {
+			System.out.println("Unable to connect to the address: " + ip + ":" + port + " | Starting a server");
+			return false;
+		}
+		System.out.println("Successfully connected to the server.");
+		return true;
+	}
+	private void initializeServer() {
+		try {
+			serverSocket = new ServerSocket(port, 8, InetAddress.getByName(ip));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
